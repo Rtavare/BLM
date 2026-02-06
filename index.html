@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Biblical Leadership Match</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --card:#14141b;
+      --text:#f4f4f5;
+      --muted:#a1a1aa;
+      --border:#2a2a35;
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(900px 650px at 95% 20%, rgba(34,197,94,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Mobile-friendly layout tweaks */
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
+      min-height: 100svh;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{display:flex; flex-direction:column; gap:2px; min-width: 260px}
+    .brand h1{margin:0; font-size:20px; letter-spacing:.2px}
+    .brand p{margin:0; font-size:13px; color:var(--muted); line-height:1.35}
+
+    .chiprow{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; align-items:center}
+    .chip{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .chip input{accent-color: var(--accent); transform: translateY(0.5px)}
+
+    .grid{display:grid; grid-template-columns: 1.05fr .95fr; gap:12px; align-items:start}
+    @media (max-width: 900px){ .grid{grid-template-columns: 1fr} }
+
+    .card{
+      background: rgba(20,20,27,.88);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .card .hd h2{margin:0; font-size:15px; font-weight:800; letter-spacing:.2px}
+    .card .bd{padding:14px}
+
+    .muted{color:var(--muted)}
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap}
+
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 12px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 750;
+      letter-spacing:.2px;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+      touch-action: manipulation;
+      min-height: 44px; /* mobile tap target */
+    }
+    button:hover{background: rgba(255,255,255,.06)}
+    button:active{transform: translateY(1px)}
+    button.primary{
+      border-color: rgba(124,58,237,.75);
+      background: linear-gradient(180deg, rgba(124,58,237,.35), rgba(124,58,237,.18));
+    }
+    button.good{
+      border-color: rgba(34,197,94,.75);
+      background: linear-gradient(180deg, rgba(34,197,94,.28), rgba(34,197,94,.12));
+    }
+    button.danger{
+      border-color: rgba(239,68,68,.75);
+      background: linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.10));
+    }
+    button.ghost{background:transparent}
+    button:disabled{opacity:.55; cursor:not-allowed}
+
+    /* Sticky progress for mobile */
+    .stickyTop{
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: rgba(20,20,27,.92);
+      backdrop-filter: blur(8px);
+      padding: 10px 0 10px 0;
+      margin: -10px 0 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .progress{
+      width:100%;
+      height: 10px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 999px;
+      overflow:hidden;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .35s ease;
+    }
+
+    .qtitle{font-size:18px; margin: 8px 0 0 0; line-height:1.25; letter-spacing:.15px}
+    .answers{display:flex; flex-direction:column; gap:10px; margin-top: 14px}
+    .ans{
+      text-align:left;
+      padding: 14px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .ans small{color: var(--muted); font-weight:700}
+
+    .pill{
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+
+    .two{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width:520px){ .two{grid-template-columns: 1fr} }
+
+    .field{display:flex; flex-direction:column; gap:6px; margin-top:8px}
+    label{font-size:12px; color:var(--muted); font-weight:750}
+    input[type="text"]{
+      width:100%;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding: 12px 12px;
+      border-radius: 14px;
+      color: var(--text);
+      outline:none;
+      min-height: 44px; /* mobile */
+    }
+    input[type="text"]:focus{
+      border-color: rgba(124,58,237,.7);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.18);
+    }
+
+    .stat{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius: 14px;
+      margin: 10px 0;
+      align-items:center;
+    }
+    .bar{
+      height: 10px;
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+      flex:1;
+      margin-left: 12px;
+      min-width: 90px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(124,58,237,.9), rgba(34,197,94,.85));
+      transition: width .35s ease;
+    }
+
+    .kvs{display:flex; flex-direction:column; gap:10px}
+    .callout{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .callout h3{margin:0 0 6px 0; font-size:14px}
+    .callout p{margin:0; color: var(--muted); line-height:1.45; font-size: 13px}
+
+    .footer{color: var(--muted); font-size: 12px; text-align:center; padding: 10px 0 18px}
+    .hidden{display:none !important}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1 id="ui_title">🛡️ Biblical Leadership Match</h1>
+        <p id="ui_subtitle">Teen-friendly: 20 questions → match to a Bible leader + your “superpower” + a level-up habit.</p>
+      </div>
+
+      <div class="chiprow">
+        <div class="chip" title="Switch language">
+          <input id="langToggle" type="checkbox" />
+          <span id="ui_spanish">Español</span>
+        </div>
+        <div class="chip" title="Vibration feedback on mobile (if supported)">
+          <input id="hapticsToggle" type="checkbox" checked />
+          <span id="ui_haptics">Haptics</span>
+        </div>
+        <div class="chip" title="Sound feedback (beep)">
+          <input id="soundToggle" type="checkbox" />
+          <span id="ui_sound">Sound</span>
+        </div>
+        <div class="chip" title="Stores your latest result in this browser">
+          <span id="saveState">Saved: —</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card" id="mainCard">
+        <div class="hd">
+          <h2 id="panelTitle">Start</h2>
+          <div class="pill" id="stepPill">Step 1 of 3</div>
+        </div>
+
+        <div class="bd">
+          <!-- START -->
+          <div id="startView">
+            <div class="two">
+              <div class="field">
+                <label id="ui_name_label" for="participantName">Your name (optional)</label>
+                <input id="participantName" type="text" placeholder="e.g., John" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label id="ui_group_label" for="groupName">Group (optional)</label>
+                <input id="groupName" type="text" placeholder="e.g., Youth Night" autocomplete="off" />
+              </div>
+            </div>
+
+            <div class="callout" style="margin-top:12px">
+              <h3 id="ui_how_title">How it works</h3>
+              <p id="ui_how_body">
+                You’ll answer 20 quick scenario questions. Each answer adds points to leadership traits.
+                At the end, you’ll get your Bible leader match + a growth habit to practice this week.
+              </p>
+            </div>
+
+            <div class="btnrow" style="margin-top:12px">
+              <button class="primary" id="startBtn">Start</button>
+              <button class="ghost" id="loadLastBtn">Load saved</button>
+              <button class="danger" id="resetAllBtn" title="Clears saved state">Reset</button>
+            </div>
+
+            <p class="muted" id="ui_tip" style="margin:12px 0 0 0; line-height:1.5; font-size:13px">
+              Tip: Keyboard shortcuts during the quiz: press <b>1–4</b> to answer, <b>←</b> to go back.
+            </p>
+          </div>
+
+          <!-- QUIZ -->
+          <div id="quizView" class="hidden">
+            <div class="stickyTop">
+              <div class="progress" aria-label="progress"><div id="progressFill"></div></div>
+              <p class="muted" style="margin:10px 0 0 0" id="qMeta">Question — of —</p>
+            </div>
+
+            <h3 class="qtitle" id="qText">—</h3>
+            <div class="answers" id="answers"></div>
+
+            <div class="btnrow" style="margin-top:14px">
+              <button id="backBtn">Back</button>
+              <button class="danger" id="quitBtn">Quit</button>
+            </div>
+          </div>
+
+          <!-- RESULT -->
+          <div id="resultView" class="hidden">
+            <div class="callout">
+              <h3 id="resultTitle">Your match: —</h3>
+              <p id="resultWhy">—</p>
+            </div>
+
+            <div class="kvs" style="margin-top:12px">
+              <div class="callout">
+                <h3 id="ui_superpower_title">🔥 Your leadership superpower</h3>
+                <p id="superpowerText">—</p>
+              </div>
+
+              <div class="callout">
+                <h3 id="ui_levelup_title">🎯 Level-up habit (do this for 7 days)</h3>
+                <p id="levelUpText">—</p>
+              </div>
+
+              <div class="callout">
+                <h3 id="ui_verse_title">📖 Key verse</h3>
+                <p id="verseText">—</p>
+              </div>
+
+              <div class="callout">
+                <h3 id="ui_secondary_title">🧠 Secondary vibe</h3>
+                <p id="secondaryText">—</p>
+              </div>
+            </div>
+
+            <div class="btnrow" style="margin-top:12px">
+              <button class="good" id="shareBtn">Share</button>
+              <button id="copyBtn">Copy</button>
+              <button class="primary" id="restartBtn">Retake</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRAITS -->
+      <aside class="card">
+        <div class="hd">
+          <h2 id="ui_traits_title">Trait Scores</h2>
+          <div class="pill" id="traitHint">Updates as you answer</div>
+        </div>
+        <div class="bd" id="traitsPanel"></div>
+        <div class="bd" style="padding-top:0">
+          <div class="callout">
+            <h3 id="ui_leaders_included">Leaders included</h3>
+            <p class="muted" id="leaderList" style="margin-top:6px">—</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer" id="ui_footer">
+      Single-file app for GitHub Pages. Customize leaders/questions in the <b>CONFIG</b> section.
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * CONFIG (i18n + content)
+     ***********************/
+    const STORAGE_KEY = "bible_leader_match_v3_teen_i18n";
+
+    const I18N = {
+      en: {
+        ui_title: "🛡️ Biblical Leadership Match",
+        ui_subtitle: "20 questions → match to a Bible leader + your “superpower” + a level-up habit.",
+        ui_spanish: "Español",
+        ui_haptics: "Haptics",
+        ui_sound: "Sound",
+        panel_start: "Start",
+        panel_quiz: "Quiz",
+        panel_result: "Result",
+        step_1: "Step 1 of 3",
+        step_2: "Step 2 of 3",
+        step_3: "Step 3 of 3",
+        name_label: "Your name (optional)",
+        name_ph: "e.g., John",
+        group_label: "Group (optional)",
+        group_ph: "e.g., Youth Night",
+        how_title: "How it works",
+        how_body: "You’ll answer 20 quick scenario questions. Each answer adds points to leadership traits. At the end, you’ll get your Bible leader match + a growth habit to practice this week.",
+        btn_start: "Start",
+        btn_load: "Load saved",
+        btn_reset: "Reset",
+        tip: "Tip: Keyboard shortcuts during the quiz: press <b>1–4</b> to answer, <b>←</b> to go back.",
+        q_meta: (i,total)=>`Question ${i} of ${total}`,
+        btn_back: "Back",
+        btn_quit: "Quit",
+        confirm_quit: "Quit the quiz? Your progress is saved.",
+        confirm_reset: "Clear saved progress + last result?",
+        btn_share: "Share",
+        btn_copy: "Copy",
+        btn_retake: "Retake",
+        alert_nosaved: "No saved data found yet.",
+        alert_copied: "Copied!",
+        alert_shared_fallback: "Sharing not supported here—copied your result + link to clipboard.",
+        traits_title: "Trait Scores",
+        leaders_included: "Leaders included",
+        saved_prefix: "Saved: ",
+        result_title: (name,leader,arch)=> `${name ? name + " — " : ""}Your match is ${leader} (${arch})`,
+        superpower_title: "🔥 Your leadership superpower",
+        levelup_title: "🎯 Level-up habit (do this for 7 days)",
+        verse_title: "📖 Key verse",
+        secondary_title: "🧠 Secondary vibe",
+        footer: "Single-file app for GitHub Pages. Customize leaders/questions in the <b>CONFIG</b> section.",
+        growth_focus_prefix: "Growth focus: ",
+        secondary_line: (leader, blurb)=> `${leader}: ${blurb}`,
+        share_head: (name)=> name ? `${name} — Biblical Leadership Match` : "Biblical Leadership Match",
+        share_group: (group)=> group ? `Group: ${group}\n` : "",
+        share_match: (leader, arch)=> `Match: ${leader} (${arch})`,
+        share_secondary: (leader)=> leader ? `Secondary vibe: ${leader}\n` : "",
+        share_superpower: (sp)=> `Superpower: ${sp}`,
+        share_levelup: (txt)=> `Level-up habit: ${txt}`,
+        share_verse: (v)=> `Key verse: ${v}`,
+        share_traits: (line)=> `\nTrait mix: ${line}`
+      },
+      es: {
+        ui_title: "🛡️ Líder Bíblico",
+        ui_subtitle: "20 preguntas → tu personaje bíblico + tu “superpoder” + un hábito para subir de nivel.",
+        ui_spanish: "Español",
+        ui_haptics: "Vibración",
+        ui_sound: "Sonido",
+        panel_start: "Inicio",
+        panel_quiz: "Quiz",
+        panel_result: "Resultado",
+        step_1: "Paso 1 de 3",
+        step_2: "Paso 2 de 3",
+        step_3: "Paso 3 de 3",
+        name_label: "Tu nombre (opcional)",
+        name_ph: "ej.: John",
+        group_label: "Grupo (opcional)",
+        group_ph: "ej.: Noche de Jóvenes",
+        how_title: "Cómo funciona",
+        how_body: "Responderás 20 preguntas rápidas con situaciones reales. Cada respuesta suma puntos a rasgos de liderazgo. Al final verás tu líder bíblico + un hábito para crecer esta semana.",
+        btn_start: "Comenzar",
+        btn_load: "Cargar guardado",
+        btn_reset: "Reiniciar",
+        tip: "Tip: Atajos de teclado en el quiz: presiona <b>1–4</b> para responder, <b>←</b> para volver.",
+        q_meta: (i,total)=>`Pregunta ${i} de ${total}`,
+        btn_back: "Atrás",
+        btn_quit: "Salir",
+        confirm_quit: "¿Salir del quiz? Tu progreso queda guardado.",
+        confirm_reset: "¿Borrar el progreso guardado y el último resultado?",
+        btn_share: "Compartir",
+        btn_copy: "Copiar",
+        btn_retake: "Repetir",
+        alert_nosaved: "Todavía no hay datos guardados.",
+        alert_copied: "¡Copiado!",
+        alert_shared_fallback: "Aquí no se puede compartir—copié tu resultado + el enlace.",
+        traits_title: "Rasgos",
+        leaders_included: "Líderes incluidos",
+        saved_prefix: "Guardado: ",
+        result_title: (name,leader,arch)=> `${name ? name + " — " : ""}Tu personaje es ${leader} (${arch})`,
+        superpower_title: "🔥 Tu superpoder de liderazgo",
+        levelup_title: "🎯 Hábito para subir de nivel (7 días)",
+        verse_title: "📖 Versículo clave",
+        secondary_title: "🧠 Vibe secundaria",
+        footer: "App en un solo archivo para GitHub Pages. Edita líderes/preguntas en la sección <b>CONFIG</b>.",
+        growth_focus_prefix: "Enfoque de crecimiento: ",
+        secondary_line: (leader, blurb)=> `${leader}: ${blurb}`,
+        share_head: (name)=> name ? `${name} — Tu Líder Bíblico` : "Tu Líder Bíblico",
+        share_group: (group)=> group ? `Grupo: ${group}\n` : "",
+        share_match: (leader, arch)=> `Personaje: ${leader} (${arch})`,
+        share_secondary: (leader)=> leader ? `Vibe secundaria: ${leader}\n` : "",
+        share_superpower: (sp)=> `Superpoder: ${sp}`,
+        share_levelup: (txt)=> `Hábito (7 días): ${txt}`,
+        share_verse: (v)=> `Versículo: ${v}`,
+        share_traits: (line)=> `\nRasgos: ${line}`
+      }
+    };
+
+    // Trait metadata (bilingual)
+    const TRAITS = {
+      V: { name:{en:"Visionary", es:"Visionario"}, desc:{en:"Big-picture, future-focused", es:"Ve el panorama completo"} },
+      S: { name:{en:"Strategic", es:"Estratégico"}, desc:{en:"Plans, organizes, thinks long-term", es:"Planifica y organiza"} },
+      R: { name:{en:"Relational", es:"Relacional"}, desc:{en:"People-first, encouraging, unifying", es:"Prioriza a las personas"} },
+      B: { name:{en:"Bold", es:"Valiente"}, desc:{en:"Takes action, speaks up, steps out", es:"Actúa y se atreve"} },
+      E: { name:{en:"Executor", es:"Ejecutor"}, desc:{en:"Reliable, consistent, gets it done", es:"Constante y cumplidor"} },
+      C: { name:{en:"Counselor", es:"Consejero"}, desc:{en:"Wise, thoughtful, discerning", es:"Sabio y reflexivo"} }
+    };
+
+    // Level-up habits by trait (bilingual)
+    const LEVEL_UP_BY_TRAIT = {
+      V: {
+        en: "Write a 1-sentence goal for your week. Each morning ask: “What’s one step toward it today?”",
+        es: "Escribe una meta en 1 oración para tu semana. Cada mañana pregunta: “¿Cuál es un paso hoy?”"
+      },
+      S: {
+        en: "Make a mini-plan: 3 steps + 1 deadline. Then do step 1 within 10 minutes.",
+        es: "Haz un mini-plan: 3 pasos + 1 fecha. Luego haz el paso 1 en 10 minutos."
+      },
+      R: {
+        en: "Start 1 real convo daily: ask “How are you—really?” and listen without interrupting.",
+        es: "Inicia 1 conversación real diaria: “¿Cómo estás—de verdad?” y escucha sin interrumpir."
+      },
+      B: {
+        en: "Do one brave thing daily (small counts): speak up, volunteer, invite someone, or try something new.",
+        es: "Haz una cosa valiente al día (pequeña cuenta): habla, ofrece ayuda, invita a alguien o intenta algo nuevo."
+      },
+      E: {
+        en: "Choose one habit and do it for 7 days (prayer, reading, workout, homework block). Track it.",
+        es: "Elige un hábito y hazlo 7 días (oración, lectura, ejercicio, estudio). Márcalo cada día."
+      },
+      C: {
+        en: "Before reacting, pause 10 seconds. Ask: “What’s the wisest next move?” Then respond.",
+        es: "Antes de reaccionar, pausa 10 segundos. Pregunta: “¿Cuál es el paso más sabio?” y responde."
+      }
+    };
+
+    // Leaders (bilingual fields)
+    const LEADERS = [
+      {
+        id:"moses",
+        name:{en:"Moses", es:"Moisés"},
+        archetype:{en:"Visionary Leader", es:"Líder visionario"},
+        weights:{ V:30, S:20, R:20, C:15, B:10, E:5 },
+        why:{
+          en:"You’re the type who can carry a big mission. You think about purpose, direction, and helping people move forward.",
+          es:"Eres de los que pueden cargar una misión grande. Piensas en propósito, dirección y cómo ayudar a otros a avanzar."
+        },
+        superpower:{
+          en:"Big-picture faith + leading through change (you can guide people when life feels messy).",
+          es:"Fe en grande + guiar cambios (puedes liderar cuando la vida se pone complicada)."
+        },
+        verse:"Exodus 3:10–12",
+        secondaryBlurb:{
+          en:"When you’re locked in, you’re great at guiding a team through a new season.",
+          es:"Cuando te enfocas, eres excelente guiando a un grupo hacia una nueva etapa."
+        }
+      },
+      {
+        id:"nehemiah",
+        name:{en:"Nehemiah", es:"Nehemías"},
+        archetype:{en:"Builder / Reformer", es:"Constructor / Reformador"},
+        weights:{ S:30, B:25, E:20, V:15, R:5, C:5 },
+        why:{
+          en:"You notice what’s broken and you actually want to fix it. You’re a builder: prayer + plan + action.",
+          es:"Ves lo que está roto y quieres arreglarlo. Eres constructor: oración + plan + acción."
+        },
+        superpower:{
+          en:"Turning problems into progress (you rebuild, organize, and keep moving).",
+          es:"Convertir problemas en progreso (reconstruyes, organizas y sigues avanzando)."
+        },
+        verse:"Nehemiah 2:17–18",
+        secondaryBlurb:{
+          en:"You’re strong at taking an idea and making it real.",
+          es:"Eres fuerte tomando una idea y haciéndola realidad."
+        }
+      },
+      {
+        id:"joseph",
+        name:{en:"Joseph", es:"José"},
+        archetype:{en:"Faithful Executor", es:"Ejecutor fiel"},
+        weights:{ E:35, S:25, C:20, R:10, V:5, B:5 },
+        why:{
+          en:"You’re steady. Even when life is unfair, you keep your character and keep doing the right thing.",
+          es:"Eres estable. Aun cuando la vida es injusta, mantienes tu carácter y sigues haciendo lo correcto."
+        },
+        superpower:{
+          en:"Consistency under pressure (you don’t fold—you grow).",
+          es:"Constancia bajo presión (no te rompes—creces)."
+        },
+        verse:"Genesis 41:39–40",
+        secondaryBlurb:{
+          en:"You’re built for responsibility—people trust you with real stuff.",
+          es:"Estás hecho para responsabilidad—la gente confía en ti para cosas importantes."
+        }
+      },
+      {
+        id:"david",
+        name:{en:"David", es:"David"},
+        archetype:{en:"Courageous Shepherd", es:"Pastor valiente"},
+        weights:{ B:30, R:25, V:20, E:15, C:5, S:5 },
+        why:{
+          en:"You lead with heart and courage. You’re the person who steps up when others hesitate.",
+          es:"Lideras con corazón y valentía. Eres quien se levanta cuando otros dudan."
+        },
+        superpower:{
+          en:"Brave heart + strong influence (people follow your energy and faith).",
+          es:"Corazón valiente + influencia (la gente sigue tu energía y fe)."
+        },
+        verse:"1 Samuel 16:12–13",
+        secondaryBlurb:{
+          en:"You can lift a room’s confidence fast.",
+          es:"Puedes subir la confianza del grupo rápido."
+        }
+      },
+      {
+        id:"solomon",
+        name:{en:"Solomon", es:"Salomón"},
+        archetype:{en:"Wise Strategist", es:"Estratega sabio"},
+        weights:{ C:35, S:30, V:15, E:10, R:5, B:5 },
+        why:{
+          en:"You’re a thinker. You like understanding what’s really going on before making a move.",
+          es:"Eres pensador. Te gusta entender bien lo que pasa antes de actuar."
+        },
+        superpower:{
+          en:"Wisdom and clarity (you help people make smarter decisions).",
+          es:"Sabiduría y claridad (ayudas a otros a decidir mejor)."
+        },
+        verse:"1 Kings 3:9–12",
+        secondaryBlurb:{
+          en:"You’re great at seeing angles other people miss.",
+          es:"Eres buenísimo viendo cosas que otros no ven."
+        }
+      },
+      {
+        id:"peter",
+        name:{en:"Peter", es:"Pedro"},
+        archetype:{en:"Bold Influencer", es:"Influenciador valiente"},
+        weights:{ B:35, R:30, V:15, E:10, S:5, C:5 },
+        why:{
+          en:"You’ve got energy and courage. You’re not afraid to speak up, try, and lead out loud.",
+          es:"Tienes energía y valentía. No te da miedo hablar, intentar y liderar en voz alta."
+        },
+        superpower:{
+          en:"Momentum (you get things moving and bring people with you).",
+          es:"Impulso (pones las cosas en movimiento y traes a otros contigo)."
+        },
+        verse:"Acts 2:14",
+        secondaryBlurb:{
+          en:"You can rally people quickly—just aim it with purpose.",
+          es:"Puedes motivar al grupo rápido—solo enfócalo con propósito."
+        }
+      },
+      {
+        id:"paul",
+        name:{en:"Paul", es:"Pablo"},
+        archetype:{en:"Developer / Multiplier", es:"Formador / Multiplicador"},
+        weights:{ V:25, E:25, R:20, S:15, B:10, C:5 },
+        why:{
+          en:"You’re a builder of people. You want others to grow, get better, and step into purpose.",
+          es:"Eres formador de personas. Quieres que otros crezcan, mejoren y entren en su propósito."
+        },
+        superpower:{
+          en:"Leader-maker (you grow other leaders and keep the mission strong).",
+          es:"Hacedor de líderes (formas líderes y fortaleces la misión)."
+        },
+        verse:"2 Timothy 2:2",
+        secondaryBlurb:{
+          en:"You’re the type who turns a team into a movement.",
+          es:"Eres de los que convierten un equipo en un movimiento."
+        }
+      },
+      {
+        id:"deborah",
+        name:{en:"Deborah", es:"Débora"},
+        archetype:{en:"Decisive Judge", es:"Jueza decisiva"},
+        weights:{ B:30, C:25, V:20, R:15, S:5, E:5 },
+        why:{
+          en:"You’re bold *and* wise. You can make hard calls while keeping things grounded and fair.",
+          es:"Eres valiente *y* sabia. Puedes tomar decisiones difíciles manteniendo todo justo y firme."
+        },
+        superpower:{
+          en:"Courage + discernment (you stand up for what’s right).",
+          es:"Valentía + discernimiento (defiendes lo correcto)."
+        },
+        verse:"Judges 4:14",
+        secondaryBlurb:{
+          en:"You’re strong in moments that require truth and bravery.",
+          es:"Eres fuerte cuando se necesita verdad y valentía."
+        }
+      }
+    ];
+
+    // Questions (bilingual)
+    const QUESTIONS = [
+      { text:{en:"When something goes wrong in your group (school, church, team), you usually:", es:"Cuando algo sale mal en tu grupo (escuela, iglesia, equipo), tú normalmente:"},
+        answers:[
+          { text:{en:"Pause, pray/think, and figure out what matters most", es:"Pauso, oro/pienso, y decido qué es lo más importante"}, points:{ C:5 } },
+          { text:{en:"Check on people first and make sure everyone’s okay", es:"Primero reviso cómo está la gente y si todos están bien"}, points:{ R:5 } },
+          { text:{en:"Jump in fast and start fixing it", es:"Me meto rápido y empiezo a resolver"}, points:{ B:5 } },
+          { text:{en:"Make a plan so it doesn’t happen again", es:"Hago un plan para que no pase otra vez"}, points:{ S:5 } }
+        ]
+      },
+      { text:{en:"Your friends count on you most for:", es:"Tus amigos cuentan contigo más por:"},
+        answers:[
+          { text:{en:"Big ideas and motivation", es:"Ideas grandes y motivación"}, points:{ V:5 } },
+          { text:{en:"Being supportive and understanding", es:"Ser apoyo y comprender"}, points:{ R:5 } },
+          { text:{en:"Actually getting things done", es:"De verdad terminar las cosas"}, points:{ E:5 } },
+          { text:{en:"Giving wise advice", es:"Dar consejos sabios"}, points:{ C:5 } }
+        ]
+      },
+      { text:{en:"In a group project, you naturally become the person who:", es:"En un proyecto en grupo, tú normalmente eres quien:"},
+        answers:[
+          { text:{en:"Keeps everyone focused on the goal", es:"Mantiene a todos enfocados en la meta"}, points:{ V:5 } },
+          { text:{en:"Organizes tasks and deadlines", es:"Organiza tareas y fechas"}, points:{ S:5 } },
+          { text:{en:"Pushes the team to move faster", es:"Empuja al grupo para avanzar más rápido"}, points:{ B:5 } },
+          { text:{en:"Makes sure everyone feels included", es:"Se asegura que todos se sientan incluidos"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"When you have a big decision to make, you usually:", es:"Cuando tienes una decisión grande, tú normalmente:"},
+        answers:[
+          { text:{en:"Think it through carefully and look for wisdom", es:"Lo pienso bien y busco sabiduría"}, points:{ C:5 } },
+          { text:{en:"Talk with someone you trust", es:"Lo hablo con alguien de confianza"}, points:{ R:5 } },
+          { text:{en:"Go with your gut and take action", es:"Me voy por el instinto y actúo"}, points:{ B:5 } },
+          { text:{en:"Write out a plan and options", es:"Escribo un plan y opciones"}, points:{ S:5 } }
+        ]
+      },
+      { text:{en:"If you see someone being left out, you’re most likely to:", es:"Si ves a alguien siendo dejado fuera, lo más probable es que tú:"},
+        answers:[
+          { text:{en:"Go sit with them and bring them in", es:"Me siento con esa persona y la incluyo"}, points:{ R:5 } },
+          { text:{en:"Speak up and address it", es:"Hablo y lo enfrento"}, points:{ B:5 } },
+          { text:{en:"Talk to a leader/adult and make a plan", es:"Hablo con un líder/adulto y hago un plan"}, points:{ S:5 } },
+          { text:{en:"Pray and look for the right moment/words", es:"Oro y busco el momento/palabras correctas"}, points:{ C:5 } }
+        ]
+      },
+      { text:{en:"When you start something new (club, ministry, team), your first focus is:", es:"Cuando comienzas algo nuevo (club, ministerio, equipo), tu primer enfoque es:"},
+        answers:[
+          { text:{en:"Why are we doing this? What’s the purpose?", es:"¿Por qué lo hacemos? ¿Cuál es el propósito?"}, points:{ V:5 } },
+          { text:{en:"Who’s doing what? Let’s set roles.", es:"¿Quién hace qué? Definamos roles."}, points:{ S:5 } },
+          { text:{en:"Let’s start now and adjust later", es:"Empecemos ya y ajustamos después"}, points:{ B:5 } },
+          { text:{en:"Let’s make sure everyone’s connected", es:"Aseguremos que todos estén conectados"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"When you’re stressed or under pressure, you tend to:", es:"Cuando estás estresado o bajo presión, tú tiendes a:"},
+        answers:[
+          { text:{en:"Stay steady and keep pushing", es:"Mantenerme firme y seguir"}, points:{ E:5 } },
+          { text:{en:"Think deeply and process what’s happening", es:"Pensar profundo y procesar lo que pasa"}, points:{ C:5 } },
+          { text:{en:"Get energized and take charge", es:"Activarme y tomar el control"}, points:{ B:5 } },
+          { text:{en:"Talk to someone and get support", es:"Hablar con alguien y buscar apoyo"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"People would describe your leadership vibe as:", es:"La gente describiría tu liderazgo como:"},
+        answers:[
+          { text:{en:"Calm and wise", es:"Calmo y sabio"}, points:{ C:5 } },
+          { text:{en:"Bold and confident", es:"Valiente y seguro"}, points:{ B:5 } },
+          { text:{en:"Caring and encouraging", es:"Cariñoso y alentador"}, points:{ R:5 } },
+          { text:{en:"Reliable and consistent", es:"Confiable y constante"}, points:{ E:5 } }
+        ]
+      },
+      { text:{en:"If your team is procrastinating, you usually:", es:"Si tu grupo está procrastinando, tú normalmente:"},
+        answers:[
+          { text:{en:"Create a simple plan with deadlines", es:"Hago un plan simple con fechas"}, points:{ S:5 } },
+          { text:{en:"Push for action and momentum", es:"Empujo para que haya acción e impulso"}, points:{ B:5 } },
+          { text:{en:"Encourage everyone and check in", es:"Animo a todos y hago seguimiento"}, points:{ R:5 } },
+          { text:{en:"Focus on doing your part well and lead by example", es:"Hago mi parte bien y lidero con ejemplo"}, points:{ E:5 } }
+        ]
+      },
+      { text:{en:"When you think about your future, you’re most driven by:", es:"Cuando piensas en tu futuro, lo que más te impulsa es:"},
+        answers:[
+          { text:{en:"A big purpose God is calling me to", es:"Un propósito grande al que Dios me llama"}, points:{ V:3, C:2 } },
+          { text:{en:"Helping people and building community", es:"Ayudar a la gente y crear comunidad"}, points:{ R:4, C:1 } },
+          { text:{en:"Making things happen and seeing results", es:"Hacer que las cosas pasen y ver resultados"}, points:{ B:3, E:2 } },
+          { text:{en:"Making smart choices and a solid plan", es:"Tomar decisiones sabias y tener un plan"}, points:{ S:4, C:1 } }
+        ]
+      },
+      { text:{en:"When someone asks you to lead something last-minute, you:", es:"Cuando te piden liderar algo de último minuto, tú:"},
+        answers:[
+          { text:{en:"Step up—let’s go", es:"Me tiro—vamos arriba"}, points:{ B:5 } },
+          { text:{en:"Ask a few questions and make a quick plan", es:"Hago unas preguntas y armo un plan rápido"}, points:{ S:5 } },
+          { text:{en:"Make sure everyone is comfortable and included", es:"Me aseguro que todos estén cómodos e incluidos"}, points:{ R:5 } },
+          { text:{en:"Pause and think/pray before deciding", es:"Pauso y pienso/oro antes de decidir"}, points:{ C:5 } }
+        ]
+      },
+      { text:{en:"If you’re given a task, you usually:", es:"Si te asignan una tarea, tú normalmente:"},
+        answers:[
+          { text:{en:"Finish it early and do it well", es:"La termino temprano y bien"}, points:{ E:5 } },
+          { text:{en:"Make a plan and follow it step-by-step", es:"Hago un plan y lo sigo paso a paso"}, points:{ S:5 } },
+          { text:{en:"Get excited and start right away", es:"Me emociono y empiezo de una"}, points:{ B:5 } },
+          { text:{en:"Ask how it impacts people first", es:"Pregunto primero cómo afecta a la gente"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"When someone disagrees with you, you usually:", es:"Cuando alguien no está de acuerdo contigo, tú normalmente:"},
+        answers:[
+          { text:{en:"Try to understand them and keep peace", es:"Trato de entender y mantener la paz"}, points:{ R:5 } },
+          { text:{en:"Stand your ground if it matters", es:"Me mantengo firme si importa"}, points:{ B:5 } },
+          { text:{en:"Look for the wisest choice, even if it’s not yours", es:"Busco la opción más sabia, aunque no sea la mía"}, points:{ C:5 } },
+          { text:{en:"Work toward a practical compromise/plan", es:"Busco un acuerdo práctico/plan"}, points:{ S:5 } }
+        ]
+      },
+      { text:{en:"If you had to plan an event (youth night, hangout, fundraiser), you’d start with:", es:"Si tuvieras que planear un evento (noche de jóvenes, salida, actividad), empezarías por:"},
+        answers:[
+          { text:{en:"The theme/purpose—what’s the goal?", es:"El tema/propósito—¿cuál es la meta?"}, points:{ V:5 } },
+          { text:{en:"A checklist, budget, and timeline", es:"Lista, presupuesto y calendario"}, points:{ S:5 } },
+          { text:{en:"Getting people hyped and recruiting friends", es:"Motivar a la gente e invitar amigos"}, points:{ B:5 } },
+          { text:{en:"Making sure everyone feels welcome", es:"Que todos se sientan bienvenidos"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"You feel most confident leading when you’re:", es:"Te sientes más confiado liderando cuando estás:"},
+        answers:[
+          { text:{en:"Casting a vision and inspiring people", es:"Marcando visión e inspirando"}, points:{ V:5 } },
+          { text:{en:"Coaching and encouraging someone", es:"Guiando y animando a alguien"}, points:{ R:5 } },
+          { text:{en:"Executing tasks and making progress", es:"Ejecutando tareas y avanzando"}, points:{ E:5 } },
+          { text:{en:"Solving a tough problem with wisdom", es:"Resolviendo un problema difícil con sabiduría"}, points:{ C:5 } }
+        ]
+      },
+      { text:{en:"When you mess up, you usually:", es:"Cuando te equivocas, tú normalmente:"},
+        answers:[
+          { text:{en:"Own it, apologize, and fix it", es:"Lo reconozco, pido perdón y lo arreglo"}, points:{ E:5 } },
+          { text:{en:"Reflect and learn so it doesn’t happen again", es:"Reflexiono y aprendo para no repetirlo"}, points:{ C:5 } },
+          { text:{en:"Move forward fast and try again", es:"Sigo rápido e intento otra vez"}, points:{ B:5 } },
+          { text:{en:"Talk it out with someone you trust", es:"Lo hablo con alguien de confianza"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"When your group is quiet or awkward, you usually:", es:"Cuando el grupo está callado o incómodo, tú normalmente:"},
+        answers:[
+          { text:{en:"Start the conversation or break the ice", es:"Rompo el hielo y arranco la conversación"}, points:{ B:5 } },
+          { text:{en:"Ask thoughtful questions", es:"Hago preguntas profundas"}, points:{ C:5 } },
+          { text:{en:"Make sure everyone gets a chance to speak", es:"Me aseguro que todos participen"}, points:{ R:5 } },
+          { text:{en:"Guide the group back to the plan", es:"Guío al grupo de vuelta al plan"}, points:{ S:5 } }
+        ]
+      },
+      { text:{en:"If you see a big problem (bullying, drama, unfairness), you’re most likely to:", es:"Si ves un problema grande (bullying, drama, injusticia), lo más probable es que tú:"},
+        answers:[
+          { text:{en:"Speak up and challenge it", es:"Hablo y lo enfrento"}, points:{ B:5 } },
+          { text:{en:"Look for the wisest way to respond", es:"Busco la forma más sabia de responder"}, points:{ C:5 } },
+          { text:{en:"Support the person affected and build unity", es:"Apoyo a la persona afectada y uno al grupo"}, points:{ R:5 } },
+          { text:{en:"Talk to leaders and create a plan to fix it", es:"Hablo con líderes y hago un plan"}, points:{ S:5 } }
+        ]
+      },
+      { text:{en:"Your friends would say your biggest strength is:", es:"Tus amigos dirían que tu mayor fortaleza es:"},
+        answers:[
+          { text:{en:"You’re consistent—you show up", es:"Eres constante—siempre estás"}, points:{ E:5 } },
+          { text:{en:"You’re brave—you take action", es:"Eres valiente—actúas"}, points:{ B:5 } },
+          { text:{en:"You’re wise—you think deeply", es:"Eres sabio—piensas profundo"}, points:{ C:5 } },
+          { text:{en:"You care—you keep people together", es:"Te importan—mantienes al grupo unido"}, points:{ R:5 } }
+        ]
+      },
+      { text:{en:"The kind of leader you want to become is someone who:", es:"El tipo de líder que quieres ser es alguien que:"},
+        answers:[
+          { text:{en:"Builds something lasting for God’s purpose", es:"Construye algo duradero para el propósito de Dios"}, points:{ V:3, E:2 } },
+          { text:{en:"Fixes what’s broken and brings change", es:"Arregla lo roto y trae cambio"}, points:{ S:3, B:2 } },
+          { text:{en:"Helps people grow and become leaders too", es:"Ayuda a otros a crecer y ser líderes"}, points:{ R:3, V:2 } },
+          { text:{en:"Brings wisdom and clarity in tough moments", es:"Trae sabiduría y claridad en momentos duros"}, points:{ C:3, S:2 } }
+        ]
+      }
+    ];
+
+    /***********************
+     * STATE
+     ***********************/
+    let state = {
+      view: "start",
+      i: 0,
+      answers: [],
+      traits: initTraits(),
+      participantName: "",
+      groupName: "",
+      lastSavedISO: null,
+      lang: "en" // en | es
+    };
+
+    function initTraits(){
+      const t = {};
+      for (const k of Object.keys(TRAITS)) t[k] = 0;
+      return t;
+    }
+
+    /***********************
+     * UI refs
+     ***********************/
+    const el = (id) => document.getElementById(id);
+
+    const startView = el("startView");
+    const quizView = el("quizView");
+    const resultView = el("resultView");
+
+    const panelTitle = el("panelTitle");
+    const stepPill = el("stepPill");
+
+    const participantName = el("participantName");
+    const groupName = el("groupName");
+
+    const qMeta = el("qMeta");
+    const qText = el("qText");
+    const answersBox = el("answers");
+    const progressFill = el("progressFill");
+
+    const traitsPanel = el("traitsPanel");
+    const leaderList = el("leaderList");
+    const saveState = el("saveState");
+
+    const hapticsToggle = el("hapticsToggle");
+    const soundToggle = el("soundToggle");
+    const langToggle = el("langToggle");
+
+    const resultTitle = el("resultTitle");
+    const resultWhy = el("resultWhy");
+    const superpowerText = el("superpowerText");
+    const levelUpText = el("levelUpText");
+    const verseText = el("verseText");
+    const secondaryText = el("secondaryText");
+
+    /***********************
+     * Feedback
+     ***********************/
+    function haptic(ms=18){
+      if (!hapticsToggle.checked) return;
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
+    let audioCtx = null;
+    function beep(){
+      if (!soundToggle.checked) return;
+      try{
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = 880;
+        g.gain.value = 0.06;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        setTimeout(()=>{ o.stop(); }, 70);
+      }catch(_){}
+    }
+    function feedback(kind="tap"){
+      if (kind === "good"){ haptic(28); beep(); }
+      else if (kind === "bad"){ haptic(55); }
+      else { haptic(12); }
+    }
+
+    /***********************
+     * i18n helpers
+     ***********************/
+    function t(key, ...args){
+      const dict = I18N[state.lang] || I18N.en;
+      const val = dict[key];
+      return (typeof val === "function") ? val(...args) : (val ?? key);
+    }
+
+    function applyStaticTranslations(){
+      document.documentElement.lang = state.lang;
+
+      el("ui_title").textContent = t("ui_title");
+      el("ui_subtitle").textContent = t("ui_subtitle");
+      el("ui_spanish").textContent = "Español"; // label stays Spanish on purpose
+      el("ui_haptics").textContent = t("ui_haptics");
+      el("ui_sound").textContent = t("ui_sound");
+
+      el("ui_name_label").textContent = t("name_label");
+      el("ui_group_label").textContent = t("group_label");
+      participantName.placeholder = t("name_ph");
+      groupName.placeholder = t("group_ph");
+
+      el("ui_how_title").textContent = t("how_title");
+      el("ui_how_body").textContent = t("how_body");
+
+      el("startBtn").textContent = t("btn_start");
+      el("loadLastBtn").textContent = t("btn_load");
+      el("resetAllBtn").textContent = t("btn_reset");
+      el("ui_tip").innerHTML = t("tip");
+
+      el("ui_superpower_title").textContent = t("superpower_title");
+      el("ui_levelup_title").textContent = t("levelup_title");
+      el("ui_verse_title").textContent = t("verse_title");
+      el("ui_secondary_title").textContent = t("secondary_title");
+
+      el("shareBtn").textContent = t("btn_share");
+      el("copyBtn").textContent = t("btn_copy");
+      el("restartBtn").textContent = t("btn_retake");
+
+      el("ui_traits_title").textContent = t("traits_title");
+      el("ui_leaders_included").textContent = t("leaders_included");
+      el("ui_footer").innerHTML = t("footer");
+
+      el("backBtn").textContent = t("btn_back");
+      el("quitBtn").textContent = t("btn_quit");
+
+      // Leaders list
+      leaderList.textContent = LEADERS
+        .map(l => `${l.name[state.lang] || l.name.en} (${l.archetype[state.lang] || l.archetype.en})`)
+        .join(" • ");
+
+      updateSavedBadge();
+    }
+
+    /***********************
+     * Views
+     ***********************/
+    function setView(v){
+      state.view = v;
+      startView.classList.toggle("hidden", v !== "start");
+      quizView.classList.toggle("hidden", v !== "quiz");
+      resultView.classList.toggle("hidden", v !== "result");
+
+      if (v === "start"){ panelTitle.textContent = t("panel_start"); stepPill.textContent = t("step_1"); }
+      if (v === "quiz"){ panelTitle.textContent = t("panel_quiz"); stepPill.textContent = t("step_2"); }
+      if (v === "result"){ panelTitle.textContent = t("panel_result"); stepPill.textContent = t("step_3"); }
+    }
+
+    function renderTraits(){
+      traitsPanel.innerHTML = "";
+      const approxMax = QUESTIONS.length * 5;
+
+      for (const code of Object.keys(TRAITS)){
+        const meta = TRAITS[code];
+        const name = meta.name[state.lang] || meta.name.en;
+
+        const val = state.traits[code] || 0;
+        const pct = Math.max(0, Math.min(100, Math.round((val / approxMax) * 100)));
+
+        const row = document.createElement("div");
+        row.className = "stat";
+        row.innerHTML = `
+          <div style="min-width:142px">
+            <div style="font-weight:850">${code} — ${name}</div>
+            <div class="muted" style="font-size:12px">${val} pts</div>
+          </div>
+          <div class="bar" aria-label="${name}"><div style="width:${pct}%"></div></div>
+          <div class="pill" style="min-width:54px; text-align:center">${pct}%</div>
+        `;
+        traitsPanel.appendChild(row);
+      }
+    }
+
+    function renderStart(){
+      participantName.value = state.participantName || "";
+      groupName.value = state.groupName || "";
+      renderTraits();
+      applyStaticTranslations();
+    }
+
+    function renderQuiz(){
+      const total = QUESTIONS.length;
+      const i = state.i;
+      const q = QUESTIONS[i];
+
+      qMeta.textContent = t("q_meta", i+1, total);
+      qText.textContent = q.text[state.lang] || q.text.en;
+
+      const pct = Math.round(((i) / total) * 100);
+      progressFill.style.width = `${pct}%`;
+
+      answersBox.innerHTML = "";
+      q.answers.forEach((a, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "ans";
+        const pointsLabel = Object.entries(a.points).map(([k,v]) => `${k}+${v}`).join(" ");
+        btn.innerHTML = `<span>${a.text[state.lang] || a.text.en}</span><small class="pill">${pointsLabel}</small>`;
+        btn.addEventListener("click", () => { feedback("tap"); selectAnswer(idx); });
+        answersBox.appendChild(btn);
+      });
+
+      el("backBtn").disabled = (i === 0);
+      renderTraits();
+    }
+
+    function renderResult(){
+      const { primary, secondary, growthTrait } = computeResult();
+
+      const name = (state.participantName || "").trim();
+      const leaderName = primary.name[state.lang] || primary.name.en;
+      const leaderArch = primary.archetype[state.lang] || primary.archetype.en;
+
+      resultTitle.textContent = t("result_title", name, leaderName, leaderArch);
+      resultWhy.textContent = primary.why[state.lang] || primary.why.en;
+
+      superpowerText.textContent = primary.superpower[state.lang] || primary.superpower.en;
+
+      const growthName = TRAITS[growthTrait]?.name[state.lang] || TRAITS[growthTrait]?.name.en || growthTrait;
+      const habit = LEVEL_UP_BY_TRAIT[growthTrait]?.[state.lang] || LEVEL_UP_BY_TRAIT[growthTrait]?.en || "";
+      levelUpText.textContent = `${t("growth_focus_prefix")}${growthName}. ${habit}`;
+
+      verseText.textContent = primary.verse;
+
+      if (secondary){
+        const secName = secondary.name[state.lang] || secondary.name.en;
+        const blurb = secondary.secondaryBlurb?.[state.lang] || secondary.secondaryBlurb?.en || "";
+        secondaryText.textContent = t("secondary_line", secName, blurb);
+      } else {
+        secondaryText.textContent = "—";
+      }
+
+      progressFill.style.width = `100%`;
+      persistState({ finished: true });
+      renderTraits();
+    }
+
+    /***********************
+     * Scoring
+     ***********************/
+    function resetTraitsFromAnswers(){
+      state.traits = initTraits();
+      for (let qi = 0; qi < state.answers.length; qi++){
+        const optIdx = state.answers[qi];
+        if (optIdx == null) continue;
+        const points = QUESTIONS[qi].answers[optIdx].points;
+        for (const [k,v] of Object.entries(points)){
+          state.traits[k] = (state.traits[k] || 0) + v;
+        }
+      }
+    }
+
+    function normalizeTo100(traitsRaw){
+      const sum = Object.values(traitsRaw).reduce((a,b)=>a+b,0) || 1;
+      const pct = {};
+      for (const k of Object.keys(TRAITS)) pct[k] = Math.round((traitsRaw[k] / sum) * 100);
+      return pct;
+    }
+
+    function distance(aPct, leaderWeights){
+      let d = 0;
+      for (const k of Object.keys(TRAITS)) d += Math.abs((aPct[k]||0) - (leaderWeights[k]||0));
+      return d;
+    }
+
+    function computeResult(){
+      const traitPct = normalizeTo100(state.traits);
+      const ranked = LEADERS.map(l => ({ leader:l, d: distance(traitPct, l.weights) }))
+                           .sort((x,y)=> x.d - y.d);
+
+      const primary = ranked[0]?.leader || LEADERS[0];
+      const secondary = ranked[1]?.leader || null;
+
+      let growthTrait = Object.keys(TRAITS)[0];
+      for (const k of Object.keys(TRAITS)){
+        if ((state.traits[k]||0) < (state.traits[growthTrait]||0)) growthTrait = k;
+      }
+      return { primary, secondary, growthTrait, traitPct };
+    }
+
+    /***********************
+     * Actions
+     ***********************/
+    function start(){
+      state.participantName = participantName.value.trim();
+      state.groupName = groupName.value.trim();
+      state.i = 0;
+      state.answers = [];
+      state.traits = initTraits();
+      persistState();
+      setView("quiz");
+      renderQuiz();
+      feedback("good");
+    }
+
+    function selectAnswer(optionIndex){
+      state.answers[state.i] = optionIndex;
+      resetTraitsFromAnswers();
+      persistState();
+
+      if (state.i < QUESTIONS.length - 1){
+        state.i += 1;
+        renderQuiz();
+      } else {
+        setView("result");
+        renderResult();
+        feedback("good");
+      }
+    }
+
+    function back(){
+      if (state.i === 0) return;
+      state.i -= 1;
+      renderQuiz();
+      feedback("tap");
+    }
+
+    function quit(){
+      if (!confirm(t("confirm_quit"))) return;
+      setView("start");
+      renderStart();
+      feedback("bad");
+    }
+
+    function retake(){
+      state.i = 0;
+      state.answers = [];
+      state.traits = initTraits();
+      persistState();
+      setView("quiz");
+      renderQuiz();
+      feedback("good");
+    }
+
+    function resetSaved(){
+      if (!confirm(t("confirm_reset"))) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = { view:"start", i:0, answers:[], traits:initTraits(), participantName:"", groupName:"", lastSavedISO:null, lang: state.lang };
+      setView("start");
+      renderStart();
+      feedback("bad");
+    }
+
+    function makeShareText(){
+      const { primary, secondary, growthTrait, traitPct } = computeResult();
+      const name = (state.participantName || "").trim();
+      const group = (state.groupName || "").trim();
+
+      const leaderName = primary.name[state.lang] || primary.name.en;
+      const arch = primary.archetype[state.lang] || primary.archetype.en;
+
+      const head = t("share_head", name);
+      const groupLine = t("share_group", group);
+      const matchLine = t("share_match", leaderName, arch);
+
+      const secLine = secondary ? t("share_secondary", (secondary.name[state.lang] || secondary.name.en)) : "";
+      const sp = primary.superpower[state.lang] || primary.superpower.en;
+
+      const habit = LEVEL_UP_BY_TRAIT[growthTrait]?.[state.lang] || LEVEL_UP_BY_TRAIT[growthTrait]?.en || "";
+      const traitsLine = Object.keys(TRAITS).map(k => `${k}:${traitPct[k]||0}%`).join("  ");
+
+      return `${head}
+${groupLine}${matchLine}
+${secLine}${t("share_superpower", sp)}
+${t("share_levelup", habit)}
+${t("share_verse", primary.verse)}${t("share_traits", traitsLine)}`;
+    }
+
+    async function share(){
+      const text = makeShareText();
+      const url = window.location.href;
+
+      try{
+        if (navigator.share){
+          await navigator.share({ title: "Biblical Leadership Match", text, url });
+          feedback("good");
+          return;
+        }
+      }catch(_){}
+
+      await copyToClipboard(text + "\n\n" + url);
+      alert(t("alert_shared_fallback"));
+      feedback("good");
+    }
+
+    async function copyResult(){
+      await copyToClipboard(makeShareText());
+      alert(t("alert_copied"));
+      feedback("good");
+    }
+
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(_){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    /***********************
+     * Storage
+     ***********************/
+    function persistState(extra = {}){
+      const payload = { ...state, ...extra, lastSavedISO: new Date().toISOString() };
+      state.lastSavedISO = payload.lastSavedISO;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      updateSavedBadge();
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return false;
+
+        state.participantName = data.participantName || "";
+        state.groupName = data.groupName || "";
+        state.i = Number.isFinite(data.i) ? data.i : 0;
+        state.answers = Array.isArray(data.answers) ? data.answers : [];
+        state.traits = data.traits && typeof data.traits === "object" ? data.traits : initTraits();
+        state.lastSavedISO = data.lastSavedISO || null;
+        state.lang = (data.lang === "es" || data.lang === "en") ? data.lang : "en";
+
+        return true;
+      }catch(_){ return false; }
+    }
+
+    function updateSavedBadge(){
+      if (!state.lastSavedISO){ saveState.textContent = `${t("saved_prefix")}—`; return; }
+      const d = new Date(state.lastSavedISO);
+      const nice = d.toLocaleString(undefined, { month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+      saveState.textContent = `${t("saved_prefix")}${nice}`;
+    }
+
+    /***********************
+     * Wiring
+     ***********************/
+    el("startBtn").addEventListener("click", start);
+    el("backBtn").addEventListener("click", back);
+    el("quitBtn").addEventListener("click", quit);
+    el("restartBtn").addEventListener("click", retake);
+    el("resetAllBtn").addEventListener("click", resetSaved);
+    el("shareBtn").addEventListener("click", share);
+    el("copyBtn").addEventListener("click", copyResult);
+
+    el("loadLastBtn").addEventListener("click", () => {
+      const ok = loadState();
+      if (!ok){ alert(t("alert_nosaved")); return; }
+      resetTraitsFromAnswers();
+
+      const finished = state.answers.length >= QUESTIONS.length && state.answers.every(v => v != null);
+      if (finished){
+        setView("result");
+        applyStaticTranslations();
+        renderResult();
+      } else {
+        setView("quiz");
+        applyStaticTranslations();
+        state.i = Math.min(state.i || 0, QUESTIONS.length - 1);
+        renderQuiz();
+      }
+      feedback("good");
+    });
+
+    // Language toggle: unchecked=en, checked=es
+    langToggle.addEventListener("change", () => {
+      state.lang = langToggle.checked ? "es" : "en";
+      persistState();
+
+      applyStaticTranslations();
+      setView(state.view);
+
+      if (state.view === "start") renderStart();
+      if (state.view === "quiz") renderQuiz();
+      if (state.view === "result") renderResult();
+
+      feedback("tap");
+    });
+
+    (function init(){
+      loadState();
+      langToggle.checked = (state.lang === "es");
+      resetTraitsFromAnswers();
+      applyStaticTranslations();
+      setView("start");
+      renderStart();
+
+      window.addEventListener("keydown", (e) => {
+        if (state.view !== "quiz") return;
+        if (e.key === "ArrowLeft") back();
+        if (e.key === "Escape") quit();
+        if (["1","2","3","4"].includes(e.key)){
+          const idx = Number(e.key) - 1;
+          const q = QUESTIONS[state.i];
+          if (q && q.answers[idx]) selectAnswer(idx);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
