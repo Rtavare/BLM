@@ -14,4 +14,4 @@ This is a public exploratory project and portfolio example.
 
 ## Run locally
 
-Open [1mindex.html[0m in a browser, or serve the repository with any local static web server.
+Open `index.html` in a browser, or serve the repository with any local static web server.
