@@ -349,6 +349,7 @@
             <div class="btnrow" style="margin-top:12px">
               <button class="good" id="shareBtn">Share</button>
               <button id="copyBtn">Copy</button>
+              <button id="emailBtn">Email me</button>
               <button class="primary" id="restartBtn">Retake</button>
             </div>
           </div>
@@ -412,9 +413,11 @@
         confirm_reset: "Clear saved progress + last result?",
         btn_share: "Share",
         btn_copy: "Copy",
+        btn_email: "Email me",
         btn_retake: "Retake",
         alert_nosaved: "No saved data found yet.",
         alert_copied: "Copied!",
+        alert_email_invalid: "Please enter a valid email address.",
         alert_shared_fallback: "Sharing not supported here—copied your result + link to clipboard.",
         traits_title: "Trait Scores",
         leaders_included: "Leaders included",
@@ -428,6 +431,7 @@
         growth_focus_prefix: "Growth focus: ",
         secondary_line: (leader, blurb)=> `${leader}: ${blurb}`,
         share_head: (name)=> name ? `${name} — Biblical Leadership Match` : "Biblical Leadership Match",
+        email_subject: (name)=> name ? `${name}'s Biblical Leadership Match Result` : "Biblical Leadership Match Result",
         share_group: (group)=> group ? `Group: ${group}\n` : "",
         share_match: (leader, arch)=> `Match: ${leader} (${arch})`,
         share_secondary: (leader)=> leader ? `Secondary vibe: ${leader}\n` : "",
@@ -465,9 +469,11 @@
         confirm_reset: "¿Borrar el progreso guardado y el último resultado?",
         btn_share: "Compartir",
         btn_copy: "Copiar",
+        btn_email: "Enviarme por correo",
         btn_retake: "Repetir",
         alert_nosaved: "Todavía no hay datos guardados.",
         alert_copied: "¡Copiado!",
+        alert_email_invalid: "Por favor, escribe un correo válido.",
         alert_shared_fallback: "Aquí no se puede compartir—copié tu resultado + el enlace.",
         traits_title: "Rasgos",
         leaders_included: "Líderes incluidos",
@@ -481,6 +487,7 @@
         growth_focus_prefix: "Enfoque de crecimiento: ",
         secondary_line: (leader, blurb)=> `${leader}: ${blurb}`,
         share_head: (name)=> name ? `${name} — Tu Líder Bíblico` : "Tu Líder Bíblico",
+        email_subject: (name)=> name ? `Resultado de ${name} — Tu Líder Bíblico` : "Resultado — Tu Líder Bíblico",
         share_group: (group)=> group ? `Grupo: ${group}\n` : "",
         share_match: (leader, arch)=> `Personaje: ${leader} (${arch})`,
         share_secondary: (leader)=> leader ? `Vibe secundaria: ${leader}\n` : "",
@@ -970,6 +977,7 @@
 
       el("shareBtn").textContent = t("btn_share");
       el("copyBtn").textContent = t("btn_copy");
+      el("emailBtn").textContent = t("btn_email");
       el("restartBtn").textContent = t("btn_retake");
 
       el("ui_traits_title").textContent = t("traits_title");
@@ -1243,6 +1251,17 @@ ${t("share_verse", primary.verse)}${t("share_traits", traitsLine)}`;
       feedback("good");
     }
 
+    function emailResult(){
+      const text = makeShareText();
+      const name = (state.participantName || "").trim();
+      const subject = t("email_subject", name);
+      const body = `${text}\n\n${window.location.href}`;
+      const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailto;
+      feedback("good");
+    }
+
     async function copyToClipboard(text){
       try{
         await navigator.clipboard.writeText(text);
@@ -1302,6 +1321,7 @@ ${t("share_verse", primary.verse)}${t("share_traits", traitsLine)}`;
     el("resetAllBtn").addEventListener("click", resetSaved);
     el("shareBtn").addEventListener("click", share);
     el("copyBtn").addEventListener("click", copyResult);
+    el("emailBtn").addEventListener("click", emailResult);
 
     el("loadLastBtn").addEventListener("click", () => {
       const ok = loadState();
