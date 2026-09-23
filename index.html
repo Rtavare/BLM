@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Biblical Leadership Match — answer 20 quick questions and match to a Bible leader, your leadership superpower, and a level-up habit." />
+    <meta name="theme-color" content="#0b1220" />
+    <title>Biblical Leadership Match</title>
+    <script type="module" crossorigin src="./assets/index-D-pwGhDl.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-AiCL50m4.css">
+  </head>
+  <body>
+    <div id="app">
+      <header id="app-header">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">🛡️</span>
+          <div class="brand-text">
+            <h1 id="ui-title"></h1>
+            <p id="ui-subtitle"></p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <div class="lang-toggle" role="group" aria-label="Language / Idioma">
+            <button type="button" id="lang-en" aria-pressed="true">EN</button>
+            <button type="button" id="lang-es" aria-pressed="false">ES</button>
+          </div>
+          <button type="button" class="mini-toggle" id="haptics-toggle" aria-pressed="true" title="Haptics"></button>
+          <button type="button" class="mini-toggle" id="sound-toggle" aria-pressed="false" title="Sound"></button>
+        </div>
+        <div class="saved-row"><span id="saved-badge" class="saved-badge"></span></div>
+      </header>
+
+      <main id="main">
+        <section id="view-home" class="view" aria-label="Home"></section>
+        <section id="view-quiz" class="view" aria-label="Quiz" hidden></section>
+        <section id="view-traits" class="view" aria-label="Traits" hidden></section>
+        <section id="view-result" class="view" aria-label="Result" hidden></section>
+      </main>
+
+      <nav id="tabbar" aria-label="Main">
+        <button type="button" class="tab" data-tab="home">
+          <span class="tab-icon" aria-hidden="true">🏠</span><span class="tab-label" id="tab-home-label"></span>
+        </button>
+        <button type="button" class="tab" data-tab="quiz">
+          <span class="tab-icon" aria-hidden="true">❓</span><span class="tab-label" id="tab-quiz-label"></span>
+        </button>
+        <button type="button" class="tab" data-tab="traits">
+          <span class="tab-icon" aria-hidden="true">📊</span><span class="tab-label" id="tab-traits-label"></span>
+        </button>
+        <button type="button" class="tab" data-tab="result">
+          <span class="tab-icon" aria-hidden="true">🏆</span><span class="tab-label" id="tab-result-label"></span>
+          <span class="tab-dot" id="result-dot" hidden aria-hidden="true"></span>
+        </button>
+      </nav>
+    </div>
+  </body>
+</html>
