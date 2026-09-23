@@ -8,6 +8,13 @@ Biblical Leadership Match (BLM) is a lightweight web experience for exploring le
 - Support simple browser-based interaction
 - Keep the experience easy to run and share as a static web project
 
+## Features
+
+- Quiz-style matching with trait scoring
+- English and Spanish interface
+- Share, copy, or email your result (opens your mail app via mailto)
+- Saved progress and last result in the browser
+
 ## Status
 
 This is a public exploratory project and portfolio example.
